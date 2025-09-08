@@ -1,0 +1,64 @@
+
+
+.complete-layout{
+  display: grid;
+  grid-template-rows: 64px 1fr;  
+  grid-template-columns: 200px 1fr; 
+  height: 100vh;
+
+}
+
+.header{
+   grid-column: 1 / span 2;
+  color: white;
+  display: flex;
+  align-items: center;
+}
+
+
+.main-content{
+  background: #f3f4f6;
+  overflow: auto;
+}
+
+
+
+
+
+
+
+
+
+
+
+.layout {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background-color: #eff1f4;
+  width: 100%;
+  box-sizing: border-box;
+  flex: 1;
+  overflow: hidden;
+}
+
+
+
+.product-grid {
+  display: flex;
+  flex-wrap: wrap;        
+  justify-content: flex-start;
+  align-items: stretch;   
+  padding: 10px;
+  overflow-y: auto;
+}
+
+
+
+
+
+
+
+
+
+
