@@ -6,9 +6,10 @@ export default function ProductCard({
   removeFromCart,
   isInCart,
   isLoading,
+  onClick,
 }) {
   return (
-    <div className="product-card">
+    <div className="product-card" onClick={() => onClick(product)}>
       <img src={product.image} alt={product.name} className="product-image" />
       <h4 className="product-name">{product.name}</h4>
       <p className="product-description" title={product.description}>
@@ -17,18 +18,24 @@ export default function ProductCard({
       <p className="price">Rs {product.price}</p>
 
       {isLoading ? (
-        <div className="spinner" />
+        <div className="spinner1" />
       ) : isInCart ? (
         <button
           className="remove-from-cart"
-          onClick={() => removeFromCart(product._id)}
+          onClick={(e) => {
+            e.stopPropagation();
+            removeFromCart(product._id);
+          }}
         >
           Remove from Cart
         </button>
       ) : (
         <button
           className="add-to-cart"
-          onClick={() => addToCart(product)}
+          onClick={(e) => {
+            e.stopPropagation();
+            addToCart(product);
+          }}
         >
           Add to Cart
         </button>

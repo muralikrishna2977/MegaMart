@@ -1,35 +1,21 @@
-
-
-.complete-layout{
+.complete-layout {
   display: grid;
-  grid-template-rows: 64px 1fr;  
-  grid-template-columns: 200px 1fr; 
+  grid-template-rows: 64px 1fr;
+  grid-template-columns: 200px 1fr;
   height: 100vh;
-
 }
 
-.header{
-   grid-column: 1 / span 2;
+.header {
+  grid-column: 1 / span 2;
   color: white;
   display: flex;
   align-items: center;
 }
 
-
-.main-content{
+.main-content {
   background: #f3f4f6;
   overflow: auto;
 }
-
-
-
-
-
-
-
-
-
-
 
 .layout {
   display: flex;
@@ -42,23 +28,30 @@
   overflow: hidden;
 }
 
-
-
 .product-grid {
   display: flex;
-  flex-wrap: wrap;        
+  flex-wrap: wrap;
   justify-content: flex-start;
-  align-items: stretch;   
+  align-items: stretch;
   padding: 10px;
   overflow-y: auto;
 }
 
+.spinner {
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #3498db;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+  margin-top: 100px;
+}
 
-
-
-
-
-
-
-
-
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

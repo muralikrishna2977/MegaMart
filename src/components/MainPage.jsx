@@ -7,62 +7,71 @@ import { useLocation } from "react-router-dom";
 import "./MainPage.css";
 import axios from "axios";
 import { API_URL } from "../App.jsx";
+import ProductDetails from "./ProductDetails.jsx";
 
 export default function App() {
   const location = useLocation();
   const userData =
-    location.state?.user ||
-    JSON.parse(localStorage.getItem("user")) ||
-    null;
+    location.state?.user || JSON.parse(localStorage.getItem("user")) || null;
 
   const userId = userData?.user_id || null;
   const email = userData?.email || null;
   const nameOfUser = userData?.name || null;
 
   const [productsData, setProductsData] = useState([]);
-  const [filters, setFilters] = useState({ category: "", minPrice: 0, maxPrice: 100000, search: "" });
+  const [filters, setFilters] = useState({
+    category: "",
+    minPrice: 0,
+    maxPrice: 100000,
+    search: "",
+  });
   const [cart, setCart] = useState([]);
   const [showCart, setShowCart] = useState(false);
   const [loadingProductId, setLoadingProductId] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [showProduct, setShowProduct] = useState(null);
 
   const filteredProducts = productsData.filter(
-  (p) =>
-    (!filters.category || p.category === filters.category) &&
-    p.price >= filters.minPrice &&
-    p.price <= filters.maxPrice &&
-    (!filters.search ||
-      p.name.toLowerCase().includes(filters.search.toLowerCase()) ||
-      p.description.toLowerCase().includes(filters.search.toLowerCase()))
-);
-
+    (p) =>
+      (!filters.category || p.category === filters.category) &&
+      p.price >= filters.minPrice &&
+      p.price <= filters.maxPrice &&
+      (!filters.search ||
+        p.name.toLowerCase().includes(filters.search.toLowerCase()) ||
+        p.description.toLowerCase().includes(filters.search.toLowerCase())),
+  );
 
   useEffect(() => {
     async function fetchData() {
+      setIsLoading(true);
       try {
         const response = await axios.post(`${API_URL}/fetchproducts`, {});
         setProductsData(response.data.products);
       } catch (err) {
         console.error(err);
+        setIsLoading(false);
+      } finally {
+        setIsLoading(false);
       }
     }
     fetchData();
   }, []);
 
-useEffect(() => {
-  async function fetchCart() {
-    if (!userId) return;
-    try {
-      const response = await axios.post(`${API_URL}/getcart`, { userId });
-      setCart(response.data.data || []);
-    } catch (err) {
-      console.error("Error fetching cart:", err);
+  useEffect(() => {
+    async function fetchCart() {
+      if (!userId) return;
+      try {
+        const response = await axios.post(`${API_URL}/getcart`, { userId });
+        setCart(response.data.data || []);
+      } catch (err) {
+        console.error("Error fetching cart:", err);
+      }
     }
-  }
-  fetchCart();
-}, [userId]);
+    fetchCart();
+  }, [userId]);
 
   async function addToCart(product) {
-    if(userId===null){
+    if (userId === null) {
       alert("Please Sign In to add to cart");
       return;
     }
@@ -104,7 +113,6 @@ useEffect(() => {
   return (
     <div className="complete-layout">
       <div className="header">
-
         <Navbar
           cartCount={cart.length}
           onCartClick={() => setShowCart(true)}
@@ -115,14 +123,24 @@ useEffect(() => {
             setFilters((prev) => ({ ...prev, search: value }))
           }
         />
-
       </div>
 
       <div className="left-side-bar">
         <FilterBar filters={filters} setFilters={setFilters} />
       </div>
 
-      <div className="main-content">
+      <div
+        className="main-content"
+        style={
+          isLoading
+            ? {
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }
+            : {}
+        }
+      >
         <main className="product-grid">
           {filteredProducts.map((p) => (
             <ProductCard
@@ -132,9 +150,12 @@ useEffect(() => {
               removeFromCart={removeFromCart}
               isInCart={cart.some((item) => item._id === p._id)}
               isLoading={loadingProductId === p._id}
+              onClick={(product) => setShowProduct(product)}
             />
           ))}
         </main>
+
+        {isLoading && <div className="spinner" />}
       </div>
 
       {showCart && (
@@ -142,6 +163,12 @@ useEffect(() => {
           cartItems={cart}
           removeFromCart={removeFromCart}
           onClose={() => setShowCart(false)}
+        />
+      )}
+      {showProduct && (
+        <ProductDetails
+          product={showProduct}
+          handleClose={() => setShowProduct(null)}
         />
       )}
     </div>

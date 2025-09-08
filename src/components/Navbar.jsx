@@ -1,11 +1,18 @@
-import SearchIcon from "../assets/search.svg";
 import CartIcon from "../assets/cart.svg";
 import ProfileIcon from "../assets/profile.svg";
+import ClearSearch from "../assets/clearSearch.svg";
 import "./NavBar.css";
 import { useNavigate } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
 
-export default function Navbar({ cartCount, onCartClick, userId, name, email, onSearch}) {
+export default function Navbar({
+  cartCount,
+  onCartClick,
+  userId,
+  name,
+  email,
+  onSearch,
+}) {
   const navigate = useNavigate();
   const [showProfile, setShowProfile] = useState(false);
   const [search, setSearch] = useState("");
@@ -17,19 +24,11 @@ export default function Navbar({ cartCount, onCartClick, userId, name, email, on
     navigate("/signin");
   };
 
-
-  const handleSearch = () => {
-  if (onSearch) {
-    onSearch(search.trim());
-  }
-};
-
-useEffect(() => {
-  if (onSearch) {
-    onSearch(search.trim());
-  }
-}, [search]);
-
+  useEffect(() => {
+    if (onSearch) {
+      onSearch(search.trim());
+    }
+  }, [search]);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -50,24 +49,35 @@ useEffect(() => {
       <p className="logo">MegaMart</p>
 
       <div className="search-bar">
-        <input placeholder="Search in MegaMart" value={search} onChange={(e) => setSearch(e.target.value)} />
-        <div className="search-icon-container" onClick={handleSearch}>
-          <img src={SearchIcon} width="30px" height="30px" />
+        <div className="search-icon-container" onClick={() => setSearch("")}>
+          <img src={ClearSearch} width="30px" height="30px" />
         </div>
+        <input
+          placeholder="Search in MegaMart"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
       </div>
 
       {userId !== null && (
         <div
           className="profile-container"
           onClick={() => setShowProfile((prev) => !prev)}
+          ref={popupRef}
         >
           <img src={ProfileIcon} height="35px" width="35px" />
           <p>Profile</p>
 
           {showProfile && (
-            <div className="profile-popup" ref={popupRef}>
-              <p><strong>Name: </strong>{name}</p>
-              <p><strong>Email: </strong>{email}</p>
+            <div className="profile-popup">
+              <p>
+                <strong>Name: </strong>
+                {name}
+              </p>
+              <p>
+                <strong>Email: </strong>
+                {email}
+              </p>
               <button onClick={handleLogout}>Logout</button>
             </div>
           )}
