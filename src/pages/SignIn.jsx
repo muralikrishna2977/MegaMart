@@ -24,6 +24,7 @@ function SignIn() {
           user_id: response.data.userid,
           name: response.data.name,
           email: response.data.email,
+          token: response.data.token,
         };
 
         localStorage.setItem("user", JSON.stringify(userData));

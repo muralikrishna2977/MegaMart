@@ -17,6 +17,7 @@ export default function App() {
   const userId = userData?.user_id || null;
   const email = userData?.email || null;
   const nameOfUser = userData?.name || null;
+  const token = userData?.token || null;
 
   const [productsData, setProductsData] = useState([]);
   const [filters, setFilters] = useState({
@@ -61,7 +62,7 @@ export default function App() {
     async function fetchCart() {
       if (!userId) return;
       try {
-        const response = await axios.post(`${API_URL}/getcart`, { userId });
+        const response = await axios.post(`${API_URL}/getcart`, { userId }, {headers: {Authorization: `Bearer ${token}`}});
         setCart(response.data.data || []);
       } catch (err) {
         console.error("Error fetching cart:", err);
@@ -76,10 +77,9 @@ export default function App() {
       return;
     }
     try {
-      const response = await axios.post(`${API_URL}/addtocart`, {
-        userId: userId,
-        productId: product._id,
-      });
+      const response = await axios.post(`${API_URL}/addtocart`, {userId: userId, productId: product._id},
+        {headers: {Authorization: `Bearer ${token}`}});
+
 
       if (response.data.message === true) {
         setCart([...cart, product]);
@@ -98,12 +98,8 @@ export default function App() {
   }
 
   async function removeFromCart(productId) {
-    console.log("aaa ", productId);
     try {
-      await axios.post(`${API_URL}/removefromcart`, {
-        userId,
-        productId,
-      });
+      await axios.post(`${API_URL}/removefromcart`, {userId, productId}, {headers: {Authorization: `Bearer ${token}`}});
       setCart(cart.filter((item) => item._id !== productId));
     } catch (err) {
       console.error("Error removing from cart:", err);
